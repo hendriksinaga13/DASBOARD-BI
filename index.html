@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>M245 Sales Intelligence</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brandbox">
+      <div class="brandmark">M245</div>
+      <div><div class="brandname">Sales Intelligence</div><div class="brandsub">Dashboard</div></div>
+    </div>
+    <nav class="nav" id="nav"></nav>
+    <div class="sidebar-foot">v5.0 &middot; Client-side</div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+  <div class="main">
+    <header class="topbar">
+      <button class="hamb" id="hamb" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <div><div class="page-title" id="pageTitle">Overview</div><div class="page-sub" id="pageSub">—</div></div>
+      <div class="topbar-right">
+        <span class="chip" id="chipMeta"><span class="dot"></span><span>Belum ada data</span></span>
+        <button class="btn primary" id="actionsBtn">Aksi</button>
+      </div>
+    </header>
+    <div class="filterbar" id="filterbar"></div>
+    <main class="content" id="view"></main>
+  </div>
+</div>
+<div class="modal-scrim" id="modalScrim"><div class="modal" id="modal"></div></div>
+<div id="toast"></div>
+<div id="tip"></div>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
