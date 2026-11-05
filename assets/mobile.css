@@ -136,10 +136,33 @@
   .mnav-ico svg { width: 22px; height: 22px; stroke-width: 2; }
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   DESKTOP (≥769px) — FIX: Jangan hide .ms-pop !
+   Dropdown filter mengandalkan styles.css:
+     .ms-pop { display:none }
+     .ms.open .ms-pop { display:block }
+   Kalau di sini dipaksa display:none !important, dropdown mati total.
+   ═══════════════════════════════════════════════════════════════════ */
 @media (min-width: 769px) {
   .mobile-nav { display: none !important; }
-  .ms-pop { display: none !important; }
+
+  /* Pastikan dropdown kembali ke mode desktop (reset sisa style mobile jika ada) */
+  .ms-pop {
+    position: absolute !important;
+    top: 40px !important;
+    left: 0 !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: 280px !important;
+    height: auto !important;
+    max-height: none !important;
+    border-radius: 12px !important;
+    box-shadow: 0 20px 45px -20px rgba(15,23,42,.45) !important;
+    padding: 0 !important;
+    /* PENTING: JANGAN tulis display:none di sini */
+  }
 }
+
 /* BOTTOM SHEET (More Menu) */
 @media (max-width: 768px) {
   .sheet-scrim {
