@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#1D4ED8">
+
+<!-- CSP Disederhanakan agar tidak ada script yang terblokir -->
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://cdn.jsdelivr.net https://unpkg.com;
+  style-src 'self' 'unsafe-inline' https://unpkg.com;
+  img-src 'self' data: blob: https:;
+  connect-src 'self' https://cdn.jsdelivr.net https://unpkg.com https: blob:;
+  worker-src 'self' blob:;">
+
+<title>M245 Sales Intelligence</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+<link rel="stylesheet" href="assets/styles.css">
+<link rel="stylesheet" href="assets/mobile.css">
+
+<!-- Leaflet Map CSS & JS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+
+<!-- STRUKTUR APLIKASI -->
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brandbox">
+      <div class="brandmark">M245</div>
+      <div><div class="brandname">Sales Intelligence</div><div class="brandsub">Dashboard</div></div>
+    </div>
+    <nav class="nav" id="nav"></nav>
+    <div class="sidebar-foot">v5.1 &middot; Client-side PWA</div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+  <div class="main">
+    <header class="topbar">
+      <button class="hamb" id="hamb" aria-label="Menu">
+        <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+      <div class="topbar-title">
+        <div class="page-title" id="pageTitle">Memuat...</div>
+        <div class="page-sub" id="pageSub">—</div>
+      </div>
+      <div class="topbar-right">
+        <span class="chip" id="chipMeta"><span class="dot"></span><span>Memuat...</span></span>
+        <button class="btn primary" id="actionsBtn">Aksi</button>
+      </div>
+    </header>
+    <div class="filterbar" id="filterbar"></div>
+    <main class="content" id="view"></main>
+  </div>
+</div>
+
+<nav class="mobile-nav" id="mobileNav"></nav>
+<div class="modal-scrim" id="modalScrim"><div class="modal" id="modal"></div></div>
+<div id="toast"></div>
+<div id="tip"></div>
+<div class="sheet-scrim" id="sheetScrim"></div>
+<div class="sheet" id="sheet"></div>
+
+<!-- LOAD APP -->
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

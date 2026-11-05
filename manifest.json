@@ -1,0 +1,25 @@
+{
+  "name": "M245 Sales Intelligence",
+  "short_name": "M245 SI",
+  "description": "Dashboard analitik penjualan M245",
+  "start_url": "./",
+  "scope": "./",
+  "id": "m245-sales-intel",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "any",
+  "background_color": "#F5F7FB",
+  "theme_color": "#1D4ED8",
+  "lang": "id",
+  "dir": "ltr",
+  "categories": ["business", "productivity"],
+  "icons": [
+    { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Overview", "short_name": "Overview", "url": "./", "description": "Dashboard utama" },
+    { "name": "Insight",  "short_name": "Insight",  "url": "./", "description": "Analitik multi-dimensi" },
+    { "name": "Upload Data", "short_name": "Data", "url": "./", "description": "Muat file LBP/DMP" }
+  ]
+}
