@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>M245 Diagnostic</title>
+<style>
+  *{box-sizing:border-box}
+  body{font-family:system-ui,sans-serif;padding:12px;margin:0;background:#f5f7fb;color:#0f172a}
+  h2{margin:0 0 12px;font-size:16px}
+  #status{padding:12px;border-radius:8px;margin-bottom:12px;font-weight:800;font-size:13px}
+  #status.ok{background:#dcfce7;color:#166534}
+  #status.bad{background:#fee2e2;color:#991b1b}
+  pre{background:#0f172a;color:#22c55e;padding:14px;border-radius:8px;font-size:11px;
+      line-height:1.6;white-space:pre-wrap;overflow-wrap:break-word;margin:0;
+      max-height:80vh;overflow:auto;font-family:ui-monospace,monospace}
+</style>
+</head>
+<body>
+<h2>🔍 M245 Diagnostic</h2>
+<div id="status">Memeriksa...</div>
+<pre id="log"></pre>
+
+<script type="module">
+const log = document.getElementById('log');
+const status = document.getElementById('status');
+
+const files = [
+  'js/core/store.js',
+  'js/core/dom.js',
+  'js/core/events.js',
+  'js/core/selectors.js',
+  'js/core/utils.js',
+  'js/filters/registry.js',
+  'js/metrics/registry.js',
+  'js/data/aggregator.js',
+  'js/data/parser.js',
+  'js/data/cache.js',
+  'js/data/loader.js',
+  'js/plugins/comparison.js',
+  'js/plugins/export.js',
+  'js/plugins/drill.js',
+  'js/analytics/stats-advanced.js',
+  'js/analytics/timeseries.js',
+  'js/analytics/decomposition.js',
+  'js/analytics/segmentation.js',
+  'js/analytics/detectors.js',
+  'js/analytics/engine.js',
+  'js/ui/feedback.js',
+  'js/ui/table.js',
+  'js/ui/filterbar.js',
+  'js/ui/multiselect.js',
+  'js/ui/charts.js',
+  'js/ui/kpi.js',
+  'js/ui/mobile-nav.js',
+  'js/views/registry.js',
+  'js/views/overview.js',
+  'js/views/comparison.js',
+  'js/views/outlet.js',
+  'js/views/salesman.js',
+  'js/views/product.js',
+  'js/views/territory.js',
+  'js/views/pivot.js',
+  'js/views/target.js',
+  'js/views/data.js',
+  'js/views/insight.js',
+  'js/views/topoutlet.js',
+  'js/pwa/register.js'
+];
+
+let ok = 0, fail = 0;
+log.textContent = '';
+
+for(const f of files){
+  try {
+    await import('./' + f);
+    log.textContent += '✅ ' + f + '\n';
+    ok++;
+  } catch(e){
+    let msg = e.message || String(e);
+    msg = msg.replace(/^Failed to fetch dynamically imported module: (.+)$/, '🚫 FILE TIDAK ADA → $1');
+    log.textContent += '❌ ' + f + '\n   → ' + msg + '\n\n';
+    fail++;
+  }
+}
+
+log.textContent += '\n────────────────────\n';
+log.textContent += 'HASIL: ' + ok + ' OK, ' + fail + ' GAGAL\n';
+
+status.textContent = fail === 0
+  ? '✅ Semua file OK — masalahnya ada di logika main.js'
+  : '❌ ' + fail + ' file bermasalah (lihat daftar di bawah)';
+status.className = fail === 0 ? 'ok' : 'bad';
+</script>
+</body>
+</html>

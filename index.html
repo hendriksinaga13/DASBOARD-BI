@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#1D4ED8">
+<meta name="author" content="Hendrik Sinaga">
+<title>M245 Sales Intelligence · by Hendrik Sinaga</title>
+
+<!-- ⚡ LIBRARY GRAFIK & PETA (JANGAN DIHAPUS) ⚡ -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+<!-- ⚡ LIBRARY UNTUK EXPORT SHARE ⚡ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<link rel="stylesheet" href="assets/styles.css">
+<link rel="stylesheet" href="assets/mobile.css?v=20241107">
+</head>
+<body>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brandbox">
+      <div class="brandmark">M245</div>
+      <div><div class="brandname">Sales Intelligence</div><div class="brandsub">Dashboard</div></div>
+    </div>
+    <nav class="nav" id="nav"></nav>
+    <div class="sidebar-foot">
+      <div>v5.1 &middot; Client-side PWA</div>
+    </div>
+  </aside>
+  
+  <div class="scrim" id="scrim"></div>
+  <div class="main">
+    <header class="topbar">
+      <button class="hamb" id="hamb" aria-label="Menu">
+        <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+      <div class="topbar-title">
+        <div class="page-title" id="pageTitle">Memuat...</div>
+        <div class="page-sub" id="pageSub">—</div>
+      </div>
+      <div class="topbar-right">
+        <button id="monthSelector" type="button" style="display:none; padding:6px 10px; border-radius:6px; border:1px solid #cbd5e1; background:#f8fafc; font-size:12px; font-weight:600; cursor:pointer; margin-right:8px; outline:none; color:#0f172a;">
+          📅 Pilih Bulan
+        </button>
+        <span class="chip" id="chipMeta"><span class="dot"></span><span>Memuat...</span></span>
+        <button class="btn primary" id="actionsBtn">Aksi</button>
+      </div>
+    </header>
+    <div class="filterbar" id="filterbar"></div>
+    <main class="content" id="view"></main>
+  </div>
+</div>
+
+<nav class="mobile-nav" id="mobileNav"></nav>
+<div class="modal-scrim" id="modalScrim"><div class="modal" id="modal"></div></div>
+<div id="toast"></div>
+<div id="tip"></div>
+<div class="sheet-scrim" id="sheetScrim"></div>
+<div class="sheet" id="sheet"></div>
+
+<!-- ⚡ UPDATE VERSI (v=20241126) ⚡ -->
+<!-- Ubah v=20241107 menjadi v=20241201 (atau angka lain) -->
+<script type="module" src="js/main.js?v=20241202"></script>
+</body>
+</html>
