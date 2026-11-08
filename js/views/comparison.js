@@ -1,0 +1,98 @@
+import { esc, compactRp, fmtDateID } from '../core/utils.js';
+import { patchHTML } from '../core/dom.js';
+import { comparisonBy } from '../plugins/comparison.js';
+import { store } from '../core/store.js';
+import { registerView } from './registry.js';
+import { deltaSpan } from '../ui/kpi.js';
+
+const DIM_OPTS = [
+  { k: 'salesman', l: 'Salesman' },
+  { k: 'product', l: 'Produk' },
+  { k: 'outlet', l: 'Outlet' },
+  { k: 'divisi', l: 'Divisi' },
+  { k: 'subbrand', l: 'Subbrand' },
+  { k: 'kabupaten', l: 'Kabupaten' },
+  { k: 'rayon', l: 'Rayon' },
+  { k: 'channel', l: 'Channel' },
+];
+
+function shell(){
+  return `<div class="grid kpis" id="cmp-kpis"></div><div class="card" id="cmp-table"></div>`;
+}
+
+function kpiBlock(state, result){
+  const s = result.summary;
+  if(!s) return '';
+  const fmt = v => v != null ? compactRp(v) : '—';
+  const lmLabel = s.prevPeriode ? 'Bulan Lalu (P' + s.prevPeriode + ')' : 'Bulan Lalu';
+  return `
+    <div class="kpi pos"><div class="kpi-l">Periode Ini</div><div class="kpi-v">${fmt(s.currentOmset)}</div>
+      <div class="kpi-s">${s.currentWeeks} mgg · ${compactRp(s.currentWeekly)}/mgg</div></div>
+    <div class="kpi"><div class="kpi-l">${esc(lmLabel)}</div><div class="kpi-v">${fmt(s.lastMonth)}</div>
+      <div class="kpi-s">${deltaSpan(s.deltaLM)} ${s.lastMonthWeeks ? s.lastMonthWeeks + ' mgg' : ''}</div></div>
+    <div class="kpi"><div class="kpi-l">Tahun Lalu</div><div class="kpi-v">${fmt(s.lastYear)}</div>
+      <div class="kpi-s">${deltaSpan(s.deltaLY)} ${s.lastYearWeeks ? s.lastYearWeeks + ' mgg' : ''}</div></div>
+    <div class="kpi purple"><div class="kpi-l">Avg 5 Week</div><div class="kpi-v">${fmt(s.avg5w)}</div>
+      <div class="kpi-s">${deltaSpan(s.delta5w)} /mgg</div></div>
+    <div class="kpi purple"><div class="kpi-l">Avg 13 Week</div><div class="kpi-v">${fmt(s.avg13w)}</div>
+      <div class="kpi-s">${deltaSpan(s.delta13w)} /mgg</div></div>
+  `;
+}
+
+function tableBlock(state, result){
+  const dim = state.ui.comparisonDim || 'salesman';
+  const dimLabel = DIM_OPTS.find(x => x.k === dim)?.l || 'Salesman';
+  const rows = result.rows.slice().sort((a, b) => b.current - a.current);
+
+  let head = `<tr>
+    <th>${esc(dimLabel)}</th>
+    <th class="num">Current</th>
+    <th class="num">Δ LM</th><th class="num">LM</th>
+    <th class="num">Δ LY</th><th class="num">LY</th>
+    <th class="num">Δ 5W</th><th class="num">5W</th>
+    <th class="num">Δ 13W</th><th class="num">13W</th>
+  </tr>`;
+
+  let body = rows.map(r => `<tr>
+    <td class="strong">${esc(r.label)}</td>
+    <td class="num strong">${compactRp(r.current)}</td>
+    <td class="num">${deltaSpan(r.deltaLM)}</td>
+    <td class="num">${r.lastMonth ? compactRp(r.lastMonth) : '—'}</td>
+    <td class="num">${deltaSpan(r.deltaLY)}</td>
+    <td class="num">${r.lastYear ? compactRp(r.lastYear) : '—'}</td>
+    <td class="num">${deltaSpan(r.delta5w)}</td>
+    <td class="num">${r.avg5w ? compactRp(r.avg5w) : '—'}</td>
+    <td class="num">${deltaSpan(r.delta13w)}</td>
+    <td class="num">${r.avg13w ? compactRp(r.avg13w) : '—'}</td>
+  </tr>`).join('');
+
+  if(!rows.length) body = `<tr><td colspan="10" style="text-align:center;padding:24px;color:var(--muted)">Tidak ada data.</td></tr>`;
+
+  return `
+    <div class="card-h"><div><div class="card-t">Detail Perbandingan</div>
+      <div class="card-s">${esc(dimLabel)} · ${rows.length} baris · ${result.summary?.currentWeeks || 0} mgg</div></div>
+      <div class="right"><select id="cmpDimSel" class="btn sm" style="padding:6px 10px">
+        ${DIM_OPTS.map(o => `<option value="${o.k}"${dim === o.k ? ' selected' : ''}>${o.l}</option>`).join('')}
+      </select></div></div>
+    <div class="tablewrap" style="max-height:640px"><table><thead>${head}</thead><tbody>${body}</tbody></table></div>
+  `;
+}
+
+function update(container, state){
+  const dim = state.ui.comparisonDim || 'salesman';
+  const result = comparisonBy(state, dim);
+  patchHTML('#cmp-kpis', kpiBlock(state, result));
+  patchHTML('#cmp-table', tableBlock(state, result));
+}
+
+registerView('comparison', {
+  label: 'Perbandingan',
+  title: 'Perbandingan Omset',
+  sub: 'LM / LY / Avg 5W / Avg 13W',
+  shell, update,
+  mount(){
+    document.addEventListener('change', e => {
+      if(e.target.id === 'cmpDimSel') store.set({ ui: { ...store.state.ui, comparisonDim: e.target.value } });
+    });
+  },
+});

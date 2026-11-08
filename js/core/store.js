@@ -1,0 +1,42 @@
+// js/core/store.js
+export const store = {
+  state: {
+    files: [],
+    rows: [],
+    outletMaster: new Map(),
+    errors: [],
+    meta: { loadedAt: null },
+    filters: { from: '', to: '', transtype: 'ALL', q: '' },
+    view: 'overview',
+    sort: {},
+    
+    activeMonth: null,
+    activeMode: 'month', 
+    activeRange: null,   
+    settings: {}, 
+
+    ui: {
+      trendMode: 'day',
+      trendMetric: 'rupiah',
+      outletTab: 'aktif',
+      comparisonDim: 'salesman',
+      openMs: null,
+      pivot: { rows: 'salesman', cols: '', measure: 'omset', sort: 'value_desc' },
+      settingsTab: 'target', // Default tab
+      targetTab: 'salesman',
+      insMode: 'salesman' // Default mode insentif
+    },
+    insightFilter: 'all',
+    insightSevFilter: 'all',
+    targets: {},
+    targetMonth: null,
+    targetView: 'all',
+  },
+  subs: new Set(),
+  set(patch){ Object.assign(this.state, patch); this.emit(); },
+  setFilter(key, value){ this.state.filters[key] = value; this.emit(); },
+  sub(fn){ this.subs.add(fn); return () => this.subs.delete(fn); },
+  emit(){ for(const fn of this.subs) fn(this.state); }
+};
+
+if (typeof window !== 'undefined') window.__store = store;

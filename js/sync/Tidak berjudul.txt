@@ -1,0 +1,62 @@
+// js/data/lazy.js
+import { store } from '../core/store.js';
+import { loadFileHash } from './cache.js';
+
+export async function activateMonth(month) {
+  if (!month) return;
+  
+  // Cari semua file LBP & DMP yang tersimpan di cache
+  const lbpFiles = store.state.files.filter(f => f.type === 'LBP' && f.months && f.months.includes(month));
+  const dmpFiles = store.state.files.filter(f => f.type === 'DMP');
+  const allHashes = [...lbpFiles.map(f => f.hash), ...dmpFiles.map(f => f.hash)];
+
+  const rows = [];
+  const master = new Map();
+  const errors = [];
+
+  // Tarik data dari IndexedDB
+  for (const hash of allHashes) {
+    const cached = await loadFileHash(hash);
+    if (!cached) continue;
+
+    if (cached.type === 'LBP') {
+      // HANYA masukkan baris yang periodenya sesuai bulan yang dipilih
+      for (const r of cached.result.records) {
+        if (r.periode === month) rows.push(r);
+      }
+    } else if (cached.type === 'DMP') {
+      for (const o of cached.result.outlets) {
+        const no = String(o.outletNo || '').trim();
+        const nm = String(o.outlet || '').trim();
+        const key = no || nm;
+        if (!key) continue;
+        master.set(key, o);
+      }
+    }
+    if (cached.result.errors) {
+      errors.push(...cached.result.errors);
+    }
+  }
+
+  // Gabungkan Master Outlet ke Rows (sama seperti di loader.js)
+  const masterByName = new Map();
+  for (const o of master.values()) if (o.outlet) masterByName.set(o.outlet, o);
+
+  for (const r of rows) {
+    const m = (r.outletNo && master.get(r.outletNo)) 
+           || (r.outlet && master.get(r.outlet)) 
+           || (r.outlet && masterByName.get(r.outlet));
+    if (!m) continue;
+    if ((!r.rayon || r.rayon === '—') && m.rayon && m.rayon !== '—') r.rayon = m.rayon;
+    if ((!r.kabupaten || r.kabupaten === '—') && m.kabupaten && m.kabupaten !== '—') r.kabupaten = m.kabupaten;
+    if ((!r.kecamatan || r.kecamatan === '—') && m.kecamatan && m.kecamatan !== '—') r.kecamatan = m.kecamatan;
+    if ((!r.kelurahan || r.kelurahan === '—') && m.kelurahan && m.kelurahan !== '—') r.kelurahan = m.kelurahan;
+    if ((!r.tipe || r.tipe === '—') && m.tipe && m.tipe !== '—') r.tipe = m.tipe;
+    if ((!r.channel || r.channel === '—') && m.channel && m.channel !== '—') r.channel = m.channel;
+    if ((!r.salesTeam || r.salesTeam === '—') && m.salesTeam && m.salesTeam !== '—') r.salesTeam = m.salesTeam;
+  }
+
+  // Set ke state utama
+  store.set({ rows, outletMaster: master, errors, activeMonth: month });
+  console.log(`[LazyLoad] Aktif bulan ${month}: ${rows.length} baris dimuat.`);
+}
